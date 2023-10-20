@@ -1,7 +1,8 @@
 {
-  "exclude": ["node_modules", "build"],
+  "exclude": ["node_modules", "build/*/**", "**/*.cjs"],
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": ".",
     "skipLibCheck": true,
     "composite": true,
     "module": "ESNext",
@@ -16,12 +17,14 @@
 
     "strict": true,
     "paths": {
-      "@front-end/*": ["./app/front-end/src/*"],
-      "@back-end/*": ["./app/back-end/src/*"]
+      "@base/*": ["./*"],
+      "@front-end/*": ["./app/front-end/*"],
+      "@back-end/*": ["./app/back-end/*"]
     }
   },
   "references": [
     { "path": "./app/front-end/tsconfig.json" },
-    { "path": "./app/back-end/tsconfig.json" }
+    { "path": "./app/back-end/ssr/tsconfig.json" },
+    { "path": "./app/back-end/api/tsconfig.json" }
   ]
 }

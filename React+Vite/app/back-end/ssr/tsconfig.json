@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.vite.json",
+  "compilerOptions": {
+    "outDir": "./build"
+    // "rootDir": "."
+    // "paths": {
+    //   "@base/*": ["../../../*"]
+    //   // "@front-end/*": ["./app/front-end/*"],
+    // }
+  },
+  "include": [
+    "../../../vite.config.ts",
+    "../../../front-end/src/entry-client",
+    "src/**/*"
+  ]
+}

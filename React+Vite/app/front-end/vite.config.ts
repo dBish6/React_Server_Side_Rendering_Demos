@@ -1,14 +1,18 @@
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { mergeConfig, defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import sharedConfig from "../../vite.config";
 
-export default defineConfig({
-  server: {
-    middlewareMode: true,
-  },
-  ssr: {},
-  plugins: [tsconfigPaths()],
-  build: {
-    outDir: "build/client",
-    ssr: "src/entry-server.tsx",
-  }
-});
+export default mergeConfig(
+  sharedConfig,
+  defineConfig({
+    root: "./",
+    plugins: [react()],
+    build: {
+      outDir: "build/client",
+      // lib: {
+      //   entry: "src/entry-client",
+      //   formats: ["cjs", "es"],
+      // },
+    },
+  })
+);

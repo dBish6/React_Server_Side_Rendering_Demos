@@ -3,10 +3,15 @@
 
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { createServer as createViteServer, ViteDevServer } from "vite";
 import sirv from "sirv";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// import "../../../front-end/src/entry-client";
 
 const createServer = async () => {
   const app = express();
@@ -27,8 +32,13 @@ const createServer = async () => {
     app.use(vite.middlewares);
   } else {
     // Instead of express.static, use sirv.
+    // app.use(
+    //   sirv("@front-end/build/client", {
+    //     gzip: true,
+    //   })
+    // );
     app.use(
-      sirv("build/client", {
+      sirv(path.resolve(__dirname, "../../../front-end/build/client"), {
         gzip: true,
       })
     );
@@ -48,7 +58,10 @@ const createServer = async () => {
       // console.log("process.env.NODE_ENV", process.env.NODE_ENV);
       // 1. Read index.html
       if (process.env.NODE_ENV === "development") {
-        template = fs.readFileSync(path.resolve("./index.html"), "utf-8");
+        template = fs.readFileSync(
+          path.resolve(__dirname, "../../../front-end/index.html"),
+          "utf-8"
+        );
 
         // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
         //    and also applies HTML transforms from Vite plugins, if any.
@@ -57,14 +70,22 @@ const createServer = async () => {
         // 3. Load the server entry. ssrLoadModule automatically transforms
         //    ESM source code to be usable in Node.js.
         // @ts-ignore
-        render = (await vite.ssrLoadModule("./src/entry-server.tsx")).render;
+        // render = (await vite.ssrLoadModule("@front-end/src/entry-server.tsx"))
+        //   .render;
+        render = (
+          await vite.ssrLoadModule(
+            path.resolve(__dirname, "../../../front-end/src/entry-server.tsx")
+          )
+        ).render;
       } else {
         template = fs.readFileSync(
-          path.resolve("./build/client/index.html"),
+          path.resolve(__dirname, "../../../front-end/build/client/index.html"),
           "utf-8"
         );
         // @ts-ignore
-        render = (await import("./build/ssr/entry-server")).render;
+        // render = (await import("@front-end/build/ssr/entry-server")).render;
+        render = (await import("../../../front-end/build/ssr/entry-server"))
+          .render;
       }
 
       // 4. Render the app HTML.
